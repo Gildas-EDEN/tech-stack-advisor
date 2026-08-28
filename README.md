@@ -1,54 +1,55 @@
 # 🚀 Tech Stack Advisor
 
-Une application Machine Learning qui recommande une stack technique adaptée à ton projet, en fonction de son type, de la taille de l'équipe, du besoin de performance et du niveau d'expérience.
+A Machine Learning application that recommends a suitable tech stack for your project, based on its type, team size, performance needs, and experience level.
 
-**🔗 Démo en ligne :** [gildas2001-tech-stack-advisor.hf.space](https://gildas2001-tech-stack-advisor.hf.space)
-**🐳 Image Docker :** [edenakpo/tech-stack-advisor](https://hub.docker.com/r/edenakpo/tech-stack-advisor)
+**🔗 Live demo:** [gildas2001-tech-stack-advisor.hf.space](https://gildas2001-tech-stack-advisor.hf.space)
+**🐳 Docker image:** [edenakpo/tech-stack-advisor](https://hub.docker.com/r/edenakpo/tech-stack-advisor)
 
 ---
 
-## 📋 À propos
+## 📋 About
 
-Renseigne quatre informations sur ton projet :
-- **Project Type** — Web App, API, ML App, ou Real-time App
-- **Team Size** — la taille de ton équipe
-- **Performance Need** — Low, Medium, ou High
-- **Experience Level** — Beginner, Intermediate, ou Expert
+Provide four pieces of information about your project:
 
-L'application encode ces choix, les passe à un modèle de classification entraîné avec `scikit-learn`, puis retourne une recommandation de stack technique adaptée à ce profil.
+* Project Type : Web App, API, ML App, or Real-time App
+* Team Size : the size of your team
+* Performance Need : Low, Medium, or High
+* Experience Level : Beginner, Intermediate, or Expert
 
-## 🛠️ Stack technique
+The application encodes these inputs, feeds them into a classification model trained with `scikit-learn`, and returns a tech stack recommendation tailored to that profile.
 
-| Composant | Technologie |
+## 🛠️ Tech Stack
+
+| Component | Technology |
 |---|---|
-| Modèle ML | scikit-learn |
+| ML model | scikit-learn |
 | Interface | Gradio |
-| Conteneurisation | Docker |
-| Hébergement | Hugging Face Spaces |
-| Langage | Python 3.11 |
+| Containerization | Docker |
+| Hosting | Hugging Face Spaces |
+| Language | Python 3.11 |
 
-## ⚙️ Comment ça marche
+## ⚙️ How it works
 
-1. `train.py` entraîne le modèle et génère `model.pkl` (le modèle) et `encoders.pkl` (les encodeurs qui traduisent chaque champ catégoriel en valeur numérique)
-2. `app.py` charge ces deux fichiers, construit l'interface avec **Gradio**, et sert les prédictions en temps réel
-3. L'application est packagée dans une image **Docker** via un `Dockerfile` multi-étapes (image de base `python:3.11-slim`, dépendances installées séparément du code pour profiter du cache des layers)
-4. L'image est déployée sur **Hugging Face Spaces**, avec le port 7860 exposé
+1. `train.py` trains the model and generates `model.pkl` (the model) and `encoders.pkl` (the encoders that translate each categorical field into a numeric value)
+2. `app.py` loads both files, builds the interface with **Gradio**, and serves predictions in real time
+3. The application is packaged into a **Docker** image via a `Dockerfile` (base image `python:3.11-slim`, dependencies installed separately from the code to take advantage of Docker layer caching)
+4. The image is deployed on **Hugging Face Spaces**, with port 7860 exposed
 
-## 📁 Structure du projet
+## 📁 Project structure
 
 ```
 tech-stack-advisor/
-├── app.py              # Interface Gradio + logique de prédiction
-├── train.py             # Entraînement du modèle et génération des encodeurs
-├── model.pkl             # Modèle scikit-learn entraîné
-├── encoders.pkl           # Encodeurs pour les variables catégorielles
-├── requirements.txt        # Dépendances Python (versions figées)
-├── Dockerfile             # Définition de l'image de conteneur
-├── .dockerignore           # Fichiers exclus du build Docker
+├── app.py              # Gradio interface + prediction logic
+├── train.py             # Model training and encoder generation
+├── model.pkl             # Trained scikit-learn model
+├── encoders.pkl           # Encoders for categorical variables
+├── requirements.txt        # Python dependencies (pinned versions)
+├── Dockerfile             # Container image definition
+├── .dockerignore           # Files excluded from the Docker build
 └── README.md
 ```
 
-## 🚀 Lancer le projet en local
+## 🚀 Run locally
 
 ```bash
 git clone https://github.com/Gildas-EDEN/tech-stack-advisor.git
@@ -61,26 +62,26 @@ python -m venv .venv
 pip install -r requirements.txt
 python app.py
 ```
-L'application est ensuite accessible sur `http://localhost:7860`.
+The app is then available at `http://localhost:7860`.
 
-## 🐳 Lancer avec Docker
+## 🐳 Run with Docker
 
-**Option 1 — Construire l'image toi-même**
+**Option 1 — Build the image yourself**
 ```bash
 docker build -t tech-stack-advisor .
 docker run -p 7860:7860 tech-stack-advisor
 ```
 
-**Option 2 — Utiliser l'image déjà publiée sur Docker Hub**
+**Option 2 — Use the pre-built image from Docker Hub**
 ```bash
 docker pull edenakpo/tech-stack-advisor:v2
 docker run -p 7860:7860 edenakpo/tech-stack-advisor:v2
 ```
 
-## 📄 Licence
+## 📄 License
 
-Ce projet est sous licence **Apache 2.0**. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
+This project is licensed under **Apache 2.0**. See the [LICENSE](./LICENSE) file for details.
 
-## 🙏 Remerciements
+## 🙏 Acknowledgments
 
-Application développée à partir d'un projet initial de [Gourav Shah](https://www.linkedin.com/in/gouravshah/) (School of DevOps), containerisée, déboguée et déployée par mes soins.
+Built on top of an original project by [Gourav Shah](https://www.linkedin.com/in/gouravshah/) (School of DevOps), containerized, debugged, and deployed by me.
