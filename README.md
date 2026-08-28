@@ -1,188 +1,86 @@
----
-title: Tech Stack Advisor
-emoji: 🧠
-colorFrom: indigo
-colorTo: pink
-sdk: docker
-app_file: app.py
-pinned: false
-license: apache-2.0
-duplicable: true
----
+# 🚀 Tech Stack Advisor
 
-# 🧠 Tech Stack Advisor – ML App (with Docker & Hugging Face Deployment)
+Une application Machine Learning qui recommande une stack technique adaptée à ton projet, en fonction de son type, de la taille de l'équipe, du besoin de performance et du niveau d'expérience.
 
-**Tech Stack Advisor** is a hands-on machine learning project designed to teach you how to build, containerize, and deploy an ML-powered web application using Docker and Hugging Face Spaces.
-
-> 🎯 This project is part of the **"Artificial Intelligence and Machine Learning (AI/ML) with Docker"** course from **School of DevOps**.
+**🔗 Démo en ligne :** [gildas2001-tech-stack-advisor.hf.space](https://gildas2001-tech-stack-advisor.hf.space)
+**🐳 Image Docker :** [edenakpo/tech-stack-advisor](https://hub.docker.com/r/edenakpo/tech-stack-advisor)
 
 ---
 
-## 🚀 What You'll Learn
+## 📋 À propos
 
-- Build and train a simple ML model using `scikit-learn`
-- Create a UI using `Gradio`
-- Containerize your app using a Dockerfile
-- Push your Docker image to Docker Hub
-- Deploy the Dockerized app on Hugging Face Spaces (free tier)
+Renseigne quatre informations sur ton projet :
+- **Project Type** — Web App, API, ML App, ou Real-time App
+- **Team Size** — la taille de ton équipe
+- **Performance Need** — Low, Medium, ou High
+- **Experience Level** — Beginner, Intermediate, ou Expert
 
----
+L'application encode ces choix, les passe à un modèle de classification entraîné avec `scikit-learn`, puis retourne une recommandation de stack technique adaptée à ce profil.
 
-## 📁 Project Structure
+## 🛠️ Stack technique
+
+| Composant | Technologie |
+|---|---|
+| Modèle ML | scikit-learn |
+| Interface | Gradio |
+| Conteneurisation | Docker |
+| Hébergement | Hugging Face Spaces |
+| Langage | Python 3.11 |
+
+## ⚙️ Comment ça marche
+
+1. `train.py` entraîne le modèle et génère `model.pkl` (le modèle) et `encoders.pkl` (les encodeurs qui traduisent chaque champ catégoriel en valeur numérique)
+2. `app.py` charge ces deux fichiers, construit l'interface avec **Gradio**, et sert les prédictions en temps réel
+3. L'application est packagée dans une image **Docker** via un `Dockerfile` multi-étapes (image de base `python:3.11-slim`, dépendances installées séparément du code pour profiter du cache des layers)
+4. L'image est déployée sur **Hugging Face Spaces**, avec le port 7860 exposé
+
+## 📁 Structure du projet
 
 ```
-
 tech-stack-advisor/
-├── app.py             # Gradio web app
-├── train.py           # Script to train and save ML model
-├── requirements.txt   # Python dependencies
-├── Dockerfile         # Docker build file (added during the lab)
-├── model.pkl          # Trained ML model (generated after training)
-├── encoders.pkl       # Encoders for categorical inputs (generated after training)
-├── LICENSE            # Apache 2.0 license
-└── README.md          # This guide
+├── app.py              # Interface Gradio + logique de prédiction
+├── train.py             # Entraînement du modèle et génération des encodeurs
+├── model.pkl             # Modèle scikit-learn entraîné
+├── encoders.pkl           # Encodeurs pour les variables catégorielles
+├── requirements.txt        # Dépendances Python (versions figées)
+├── Dockerfile             # Définition de l'image de conteneur
+├── .dockerignore           # Fichiers exclus du build Docker
+└── README.md
+```
 
-````
-
----
-
-## 🧠 Step 1: Setup and Train Your ML Model
-
-1. **Clone the repository**
+## 🚀 Lancer le projet en local
 
 ```bash
-git clone https://github.com/<your-username>/tech-stack-advisor.git
+git clone https://github.com/Gildas-EDEN/tech-stack-advisor.git
 cd tech-stack-advisor
-````
 
-2. **Install dependencies**
+python -m venv .venv
+.venv\Scripts\Activate.ps1     # Windows
+# source .venv/bin/activate    # macOS / Linux
 
-(Optional: Use a virtual environment)
-
-```bash
 pip install -r requirements.txt
-```
-
-3. **Train the model**
-
-```bash
-python train.py
-```
-
-This creates:
-
-* `model.pkl`: the trained ML model
-* `encoders.pkl`: label encoders for input/output features
-
----
-
-## 🖥️ Step 2: Run the App Locally (Without Docker)
-
-```bash
 python app.py
 ```
+L'application est ensuite accessible sur `http://localhost:7860`.
 
-Visit the app in your browser at:
+## 🐳 Lancer avec Docker
 
-```
-http://localhost:7860
-```
-
----
-
-## 🐳 Step 3: Add Docker Support
-
-Create a file named `Dockerfile` in the root of the project:
-
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 7860
-
-CMD ["python", "app.py"]
-```
-
----
-
-## 🔧 Step 4: Build and Run the Docker Container
-
-1. **Build the image**
-
+**Option 1 — Construire l'image toi-même**
 ```bash
 docker build -t tech-stack-advisor .
-```
-
-2. **Run the container**
-
-```bash
 docker run -p 7860:7860 tech-stack-advisor
 ```
 
-Visit: `http://localhost:7860`
-
----
-
-## ☁️ Step 5: Publish to Docker Hub
-
-1. **Login to Docker Hub**
-
+**Option 2 — Utiliser l'image déjà publiée sur Docker Hub**
 ```bash
-docker login
+docker pull edenakpo/tech-stack-advisor:v2
+docker run -p 7860:7860 edenakpo/tech-stack-advisor:v2
 ```
 
-2. **Tag the image**
+## 📄 Licence
 
-```bash
-docker tag tech-stack-advisor <your-dockerhub-username>/tech-stack-advisor:latest
-```
+Ce projet est sous licence **Apache 2.0**. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
 
-3. **Push it**
+## 🙏 Remerciements
 
-```bash
-docker push <your-dockerhub-username>/tech-stack-advisor:latest
-```
-
----
-
-## 🌐 Step 6: Deploy to Hugging Face Spaces
-
-1. Go to [huggingface.co/spaces](https://huggingface.co/spaces)
-2. Click **Create New Space**
-3. Select:
-
-   * **SDK**: Docker
-   * **Repository**: Link to your GitHub repo with the Dockerfile
-4. Hugging Face will auto-build and deploy your container.
-
----
-
-## 🧪 Test Your Skills
-
-* Can you swap the model in `train.py` for a `LogisticRegression` model?
-* Can you add logging to show which inputs were passed?
-* Try changing the Gradio layout or theme!
-
----
-
-## 🧾 License
-
-This project is licensed under the **Apache License 2.0**.
-See the [LICENSE](./LICENSE) file for details.
-
----
-
-## 🙌 Credits
-
-Created by \[Gourav Shah](https://www.linkedin.com/in/gouravshah) as part of the **AI/ML with Docker** course at **School of DevOps**.
-
----
-
-> 🛠 Happy shipping, DevOps and MLOps builders!
-
+Application développée à partir d'un projet initial de [Gourav Shah](https://www.linkedin.com/in/gouravshah/) (School of DevOps), containerisée, déboguée et déployée par mes soins.
